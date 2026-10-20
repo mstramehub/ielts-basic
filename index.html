@@ -672,6 +672,84 @@ const PASSAGES=[
   'Now I [practise|ˈpræktɪs] [speaking|ˈspiːkɪŋ] every day with my teacher.',
   'I want to get a good [score|skɔː] in the IELTS [test|test].']}
 ];
+/* thêm 10 câu mỗi chủ đề */
+const DICT_MORE={
+ ipa:[
+  'My [mother|ˈmʌðə] [always|ˈɔːlweɪz] [thanks|θæŋks] the [driver|ˈdraɪvə].',
+  'The [shop|ʃɒp] [sells|selz] [cheap|tʃiːp] [shoes|ʃuːz].',
+  'I [enjoy|ɪnˈdʒɔɪ] [jogging|ˈdʒɒɡɪŋ] in the park.',
+  'We [usually|ˈjuːʒuəli] watch [television|ˈtelɪvɪʒn] after dinner.',
+  '[Both|bəʊθ] of my [teeth|tiːθ] hurt.',
+  'The [weather|ˈweðə] is [rather|ˈrɑːðə] cold today.',
+  'She [visits|ˈvɪzɪts] her [cousin|ˈkʌzn] every [Sunday|ˈsʌndeɪ].',
+  'The [baby|ˈbeɪbi] is [sleeping|ˈsliːpɪŋ] in the [bedroom|ˈbedruːm].',
+  'I [heard|hɜːd] a [strange|streɪndʒ] [noise|nɔɪz] last night.',
+  'Can you [bring|brɪŋ] me a [glass|ɡlɑːs] of water?'
+ ],
+ errs:[
+  'I [bought|bɔːt] some [chocolate|ˈtʃɒklət] for my sister.',
+  '[February|ˈfebruəri] is the shortest month of the year.',
+  'She [often|ˈɒfn] eats [salmon|ˈsæmən] for dinner.',
+  'The [island|ˈaɪlənd] is [famous|ˈfeɪməs] for its beaches.',
+  'I [prefer|prɪˈfɜː] tea to coffee.',
+  'The [women|ˈwɪmɪn] [said|sed] they were tired.',
+  'He paid back the [debt|det] last month.',
+  '[Clothes|kləʊðz] in this shop are [quite|kwaɪt] cheap.',
+  'She has a [foreign|ˈfɒrən] [colleague|ˈkɒliːɡ] from [Europe|ˈjʊərəp].',
+  'We [walked|wɔːkt] around the old [castle|ˈkɑːsl].'
+ ],
+ s:[
+  'My grandmother [grows|ɡrəʊz] [tomatoes|təˈmɑːtəʊz] in her garden.',
+  'There are many [buses|ˈbʌsɪz] and [taxis|ˈtæksiz] in the city.',
+  'He [brushes|ˈbrʌʃɪz] his teeth and [combs|kəʊmz] his hair.',
+  'She [keeps|kiːps] her [books|bʊks] on the [shelves|ʃelvz].',
+  'My brother [collects|kəˈlekts] [stamps|stæmps] and [coins|kɔɪnz].',
+  'The teacher [checks|tʃeks] our [exercises|ˈeksəsaɪzɪz] every day.',
+  'It [costs|kɒsts] ten [dollars|ˈdɒləz].',
+  'Lan [sings|sɪŋz] and [dances|ˈdɑːnsɪz] very well.',
+  'He [wears|weəz] [glasses|ˈɡlɑːsɪz] when he [reads|riːdz].',
+  'My mum [buys|baɪz] [oranges|ˈɒrɪndʒɪz] and [grapes|ɡreɪps] at the market.'
+ ],
+ ed:[
+  'I [called|kɔːld] my friend and [invited|ɪnˈvaɪtɪd] her to the party.',
+  'The film [started|ˈstɑːtɪd] late and [ended|ˈendɪd] at midnight.',
+  'We [walked|wɔːkt] to the beach and [watched|wɒtʃt] the sunset.',
+  'She [missed|mɪst] the bus, so she [arrived|əˈraɪvd] late.',
+  'My brother [passed|pɑːst] the exam and [celebrated|ˈselɪbreɪtɪd] with us.',
+  'They [cooked|kʊkt] dinner and [cleaned|kliːnd] the kitchen.',
+  'I [needed|ˈniːdɪd] some money, so I [worked|wɜːkt] at a cafe.',
+  'He [kissed|kɪst] his mother and [hugged|hʌɡd] his father.',
+  'The children [danced|dɑːnst] and [played|pleɪd] in the rain.',
+  'We [planned|plænd] a trip but [changed|tʃeɪndʒd] our minds.'
+ ],
+ pairs:[
+  'The [man|mæn] saw two [men|men] at the door.',
+  'I [feel|fiːl] that he will [fill|fɪl] the glass.',
+  'Please [eat|iːt] [it|ɪt] now.',
+  'The [white|waɪt] car is very [wide|waɪd].',
+  '[Nine|naɪn] people said it was [nice|naɪs].',
+  '[Sue|suː] has a new pair of [shoes|ʃuːz].',
+  'The [cap|kæp] and the [cup|kʌp] are on the table.',
+  'He [walks|wɔːks] but she [works|wɜːks].',
+  '[Thank|θæŋk] the man in the [tank|tæŋk].',
+  'The [cheap|tʃiːp] [chip|tʃɪp] is in the box.'
+ ]
+};
+Object.keys(DICT_MORE).forEach(k=>DICT_EXTRA[k].push(...DICT_MORE[k]));
+PASSAGES.push(
+ {title:'My school', lines:[
+  'I am a student at a [high|haɪ] school in Quy Nhon.',
+  'My school has a big [library|ˈlaɪbrəri] and a [football|ˈfʊtbɔːl] field.',
+  'My [favourite|ˈfeɪvərɪt] [subject|ˈsʌbdʒɪkt] is English.',
+  'Our teachers are [kind|kaɪnd] and very [patient|ˈpeɪʃnt].',
+  'I have [made|meɪd] many good [friends|frendz] there.']},
+ {title:'Vietnamese food', lines:[
+  'Vietnamese food is [delicious|dɪˈlɪʃəs] and [healthy|ˈhelθi].',
+  'My [favourite|ˈfeɪvərɪt] dish is [chicken|ˈtʃɪkɪn] [noodle|ˈnuːdl] soup.',
+  'People [usually|ˈjuːʒuəli] eat it for [breakfast|ˈbrekfəst].',
+  'Last [Sunday|ˈsʌndeɪ], my mother [cooked|kʊkt] it for the whole family.',
+  'Everyone [thought|θɔːt] it was [wonderful|ˈwʌndəfl].']}
+);
 const parseD=s=>{const focus=[];const t=s.replace(/\[([^|\]]+)\|([^\]]+)\]/g,(m,w,p)=>{focus.push({w,p});return w;});return {t,focus};};
 const cleanW=w=>w.replace(/[.,!?;:]+$/,'');
 function dictPool(topic){
