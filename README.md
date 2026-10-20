@@ -2,7 +2,7 @@
 
 Website học tiếng Anh nền tảng cho học viên IELTS mới bắt đầu.
 
-Link: https://mstramehub.github.io/ielts-basic-phat-am-/
+Link: https://mstramehub.github.io/ielts-basic/
 
 | Mục | Thư mục | Nội dung |
 | --- | --- | --- |

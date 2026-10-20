@@ -2,8 +2,10 @@
    Mật khẩu lưu ở config.json (thư mục gốc) dưới dạng mã hoá SHA-256. */
 (function(){
   var SALT='mstram-ielts-basic:';
-  var REPO='mstramehub/ielts-basic-phat-am-';
   var BASE=new URL('..',document.currentScript.src).href;
+  /* Tự nhận tên kho từ địa chỉ GitHub Pages, để đổi tên kho không làm hỏng mật khẩu */
+  var REPO='mstramehub/ielts-basic';
+  (function(){var u=new URL(BASE);var m=u.hostname.match(/^([^.]+)\.github\.io$/);var seg=u.pathname.split('/').filter(Boolean)[0];if(m&&seg)REPO=m[1]+'/'+seg;})();
   var CONFIG_URLS=[BASE+'config.json','https://raw.githubusercontent.com/'+REPO+'/main/config.json'];
   var EDIT_URL='https://github.com/'+REPO+'/edit/main/config.json';
   var LOGO=BASE+'assets/logo.png';
