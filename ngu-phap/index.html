@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ngữ pháp · IELTS Basic</title>
+<meta name="description" content="Ngữ pháp IELTS Basic: các thì cơ bản, so sánh, danh từ đếm được và không đếm được, kèm bài trắc nghiệm. Ms Trâm English Hub.">
+<link rel="icon" href="../assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Gentium+Book+Plus:wght@400;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/gate.css">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}</style>
+</head>
+<body>
+<script src="../assets/gate.js"></script>
+<div class="shell">
+  <nav class="side" id="nav" aria-label="Bài học"></nav>
+  <main id="main"></main>
+</div>
+<script src="../assets/core.js"></script>
+<script>
+/* ===== DỮ LIỆU NGỮ PHÁP — thêm bài mới bằng cách thêm một khối vào LESSONS =====
+   q: [câu hỏi, [4 lựa chọn], vị trí đáp án đúng (0–3), giải thích] */
+const LESSONS=[
+ {id:'present-simple',title:'Thì hiện tại đơn',en:'Present simple',sym:'V(s)',
+  use:['Thói quen, việc lặp đi lặp lại: I go to school every day.','Sự thật hiển nhiên: The sun rises in the east.','Lịch trình cố định: The train leaves at 7 a.m.'],
+  forms:['(+) I / You / We / They + V      He / She / It + V-s/es','(−) S + do not (don’t) / does not (doesn’t) + V','(?) Do / Does + S + V?'],
+  signs:'always, usually, often, sometimes, rarely, never, every day / week, once a week',
+  ex:[['My father works in a bank.','Bố tôi làm việc ở ngân hàng.'],['She doesn’t like spicy food.','Cô ấy không thích đồ ăn cay.'],['Do you play any sports?','Bạn có chơi môn thể thao nào không?']],
+  mistakes:[['She go to school by bike.','She goes to school by bike.'],['Does he plays football?','Does he play football?']],
+  q:[
+   ['My brother ___ football every Sunday.',['play','plays','playing','is play'],1,'Chủ ngữ “My brother” (ngôi 3 số ít) → plays.'],
+   ['___ your father work in a bank?',['Do','Does','Is','Are'],1,'“your father” là ngôi 3 số ít → Does + V nguyên mẫu.'],
+   ['She ___ like spicy food.',['don’t','doesn’t','isn’t','not'],1,'Phủ định ngôi 3 số ít: doesn’t + V.'],
+   ['The sun ___ in the east.',['rise','rises','is rising','rose'],1,'Sự thật hiển nhiên → hiện tại đơn, ngôi 3 số ít → rises.'],
+   ['I usually ___ up at six o’clock.',['get','gets','getting','am get'],0,'Chủ ngữ “I” → động từ nguyên mẫu.'],
+   ['Chọn câu đúng:',['He watchs TV every night.','He watches TV every night.','He watching TV every night.','He is watch TV every night.'],1,'Động từ tận cùng -ch thêm -es: watches.'],
+   ['How often ___ you go swimming?',['do','does','are','is'],0,'Chủ ngữ “you” → do.'],
+   ['My parents ___ in Quy Nhon.',['lives','live','living','is live'],1,'“My parents” số nhiều → live.']]},
+ {id:'present-continuous',title:'Thì hiện tại tiếp diễn',en:'Present continuous',sym:'V-ing',
+  use:['Việc đang xảy ra lúc nói: I am reading now.','Việc tạm thời trong giai đoạn này: She is staying with her aunt this week.','Kế hoạch tương lai gần đã sắp xếp: We are meeting at 7 tonight.'],
+  forms:['(+) S + am / is / are + V-ing','(−) S + am not / isn’t / aren’t + V-ing','(?) Am / Is / Are + S + V-ing?'],
+  signs:'now, right now, at the moment, at present, Look!, Listen!, this week',
+  ex:[['Look! The children are playing in the garden.','Nhìn kìa! Bọn trẻ đang chơi trong vườn.'],['I am studying for my exam this week.','Tuần này tôi đang ôn thi.'],['Are you listening to me?','Bạn có đang nghe tôi nói không?']],
+  mistakes:[['I reading a book now.','I am reading a book now.'],['I am knowing the answer.','I know the answer. (know không chia tiếp diễn)']],
+  q:[
+   ['Look! The children ___ in the garden.',['play','plays','are playing','is playing'],2,'“Look!” → đang xảy ra; “The children” số nhiều → are playing.'],
+   ['I ___ my homework at the moment.',['do','am doing','does','doing'],1,'“at the moment” → am doing.'],
+   ['She ___ TV right now.',['isn’t watching','doesn’t watch','not watching','aren’t watching'],0,'Phủ định tiếp diễn ngôi 3 số ít: isn’t + V-ing.'],
+   ['___ you listening to me?',['Do','Are','Is','Does'],1,'Câu hỏi tiếp diễn với “you” → Are.'],
+   ['Chọn câu đúng:',['I am knowing the answer.','I know the answer.','I knowing the answer.','I am know the answer.'],1,'“know” là động từ chỉ trạng thái, không dùng tiếp diễn.'],
+   ['We ___ a party next Saturday. Everything is ready.',['have','are having','has','having'],1,'Kế hoạch đã sắp xếp → hiện tại tiếp diễn.'],
+   ['Listen! Someone ___ the piano.',['plays','is playing','play','are playing'],1,'“Listen!” → đang xảy ra; “Someone” số ít → is playing.'],
+   ['My dad usually drives to work, but today he ___ the bus.',['takes','is taking','take','taking'],1,'“today” khác với thói quen → tạm thời → is taking.']]},
+ {id:'past-simple',title:'Thì quá khứ đơn',en:'Past simple',sym:'V2/ed',
+  use:['Hành động đã xảy ra và kết thúc trong quá khứ: I visited Hue last year.','Chuỗi hành động trong quá khứ: She got up, had breakfast and went to school.'],
+  forms:['(+) S + V-ed / V2 (bất quy tắc)','(−) S + did not (didn’t) + V nguyên mẫu','(?) Did + S + V nguyên mẫu?','to be: I / He / She / It + was     You / We / They + were'],
+  signs:'yesterday, last night / week / year, ago, in 2020, when I was a child',
+  ex:[['I went to Da Lat last summer.','Mùa hè năm ngoái tôi đã đi Đà Lạt.'],['We didn’t watch TV yesterday.','Hôm qua chúng tôi không xem TV.'],['Did you see the film last night?','Tối qua bạn có xem phim đó không?']],
+  mistakes:[['Did you went to school yesterday?','Did you go to school yesterday?'],['I buyed a new phone.','I bought a new phone.']],
+  irregular:[['go','went'],['have','had'],['see','saw'],['buy','bought'],['eat','ate'],['take','took'],['make','made'],['get','got'],['come','came'],['lose','lost']],
+  q:[
+   ['I ___ to Da Lat last summer.',['go','went','gone','going'],1,'“last summer” → quá khứ; go → went.'],
+   ['She ___ come to the party yesterday.',['didn’t','doesn’t','wasn’t','don’t'],0,'Phủ định quá khứ: didn’t + V nguyên mẫu.'],
+   ['___ you see the film last night?',['Do','Did','Were','Was'],1,'Câu hỏi quá khứ: Did + S + V?'],
+   ['We ___ a lot of photos on our trip.',['take','took','taken','taked'],1,'take → took (bất quy tắc).'],
+   ['Chọn câu đúng:',['Did you went to school yesterday?','Did you go to school yesterday?','Do you went to school yesterday?','Did you going to school yesterday?'],1,'Sau “Did” dùng động từ nguyên mẫu.'],
+   ['My grandfather ___ a teacher many years ago.',['is','was','were','be'],1,'“many years ago”; chủ ngữ số ít → was.'],
+   ['They ___ in Hanoi in 2019.',['live','lived','living','lives'],1,'“in 2019” → quá khứ; live → lived.'],
+   ['I ___ my keys this morning, but I found them later.',['lose','losed','lost','losing'],2,'lose → lost (bất quy tắc).']]},
+ {id:'future',title:'Tương lai: will và be going to',en:'Future forms',sym:'will',
+  use:['will: quyết định ngay lúc nói, dự đoán theo ý kiến, lời hứa: I’ll help you.','be going to: kế hoạch đã định trước: I’m going to study abroad.','be going to: dự đoán có dấu hiệu rõ ràng: Look at the clouds! It’s going to rain.'],
+  forms:['S + will / won’t + V nguyên mẫu','S + am / is / are (not) + going to + V nguyên mẫu'],
+  signs:'tomorrow, next week / month / year, soon, in the future, I think…, probably',
+  ex:[['I think it will be sunny tomorrow.','Tôi nghĩ ngày mai trời sẽ nắng.'],['We are going to visit our grandparents next weekend.','Cuối tuần sau chúng tôi sẽ về thăm ông bà.'],['Don’t worry, I won’t tell anyone.','Đừng lo, mình sẽ không kể với ai đâu.']],
+  mistakes:[['I will to call you tomorrow.','I will call you tomorrow.'],['She going to study medicine.','She is going to study medicine.']],
+  q:[
+   ['“The phone is ringing.” – “I ___ answer it.”',['will','am going to','going','am'],0,'Quyết định ngay lúc nói → will.'],
+   ['I ___ visit my grandparents next weekend. I have bought the tickets.',['will','am going to','going','would'],1,'Kế hoạch đã định (đã mua vé) → am going to.'],
+   ['Look at those dark clouds! It ___ rain.',['will','is going to','going','rains'],1,'Dự đoán có dấu hiệu rõ ràng → is going to.'],
+   ['I think she ___ pass the exam.',['will','is going','going to','does'],0,'Dự đoán theo ý kiến (I think) → will.'],
+   ['Chọn câu đúng:',['I will to call you tomorrow.','I will call you tomorrow.','I will calling you tomorrow.','I am will call you tomorrow.'],1,'will + V nguyên mẫu (không có “to”).'],
+   ['What ___ you going to do this summer?',['are','will','do','is'],0,'Câu hỏi be going to với “you” → are.'],
+   ['Don’t worry, I ___ tell anyone.',['won’t','am not','don’t','not going'],0,'Lời hứa → won’t (= will not).'],
+   ['We ___ to move to a new house next month.',['will','are going','go','going'],1,'Kế hoạch đã định → are going to move.']]},
+ {id:'comparison',title:'So sánh hơn và so sánh nhất',en:'Comparatives & superlatives',sym:'-er',
+  use:['So sánh hơn (2 đối tượng): Lan is taller than Mai.','So sánh nhất (3 đối tượng trở lên): Lan is the tallest in the class.'],
+  forms:['Tính từ ngắn: adj-er + than     the + adj-est','Tính từ dài (2 âm tiết trở lên): more + adj + than     the most + adj','Tận cùng -y: happy → happier → the happiest','Gấp đôi phụ âm: big → bigger → the biggest','Bất quy tắc: good → better → the best     bad → worse → the worst     far → farther/further'],
+  signs:'than, the …-est, the most …, in the class / in the world, of all',
+  ex:[['Ho Chi Minh City is bigger than Quy Nhon.','TP. Hồ Chí Minh lớn hơn Quy Nhơn.'],['This is the most interesting book I have read.','Đây là cuốn sách thú vị nhất tôi từng đọc.'],['Her English is better than mine.','Tiếng Anh của cô ấy tốt hơn của tôi.']],
+  mistakes:[['This test is more easy than the last one.','This test is easier than the last one.'],['He is more taller than me.','He is taller than me.']],
+  q:[
+   ['My brother is ___ than me.',['tall','taller','tallest','more tall'],1,'Tính từ ngắn + -er + than.'],
+   ['This is the ___ book I have ever read.',['interesting','more interesting','most interesting','interestinger'],2,'Tính từ dài, so sánh nhất → the most interesting.'],
+   ['Ho Chi Minh City is ___ than Quy Nhon.',['big','bigger','biger','biggest'],1,'big → bigger (gấp đôi phụ âm g).'],
+   ['Her English is ___ than mine.',['good','better','best','more good'],1,'good → better (bất quy tắc).'],
+   ['Today is ___ day of the year.',['the hottest','hotter','the hotest','most hot'],0,'hot → the hottest (gấp đôi t).'],
+   ['Chọn câu đúng:',['This test is more easy than the last one.','This test is easier than the last one.','This test is easyer than the last one.','This test is the easier than the last one.'],1,'easy → easier (y → i + er).'],
+   ['Traffic in the city is ___ than in the countryside.',['worse','badder','worst','more bad'],0,'bad → worse (bất quy tắc).'],
+   ['Walking is ___ than driving.',['more healthy','healthier','healthiest','more healthier'],1,'healthy → healthier (y → i + er).']]},
+ {id:'quantifiers',title:'Much, many, some, any',en:'Countable & uncountable nouns',sym:'+N',
+  use:['Danh từ đếm được có số nhiều: books, students, friends.','Danh từ không đếm được, không thêm -s: water, rice, money, information, advice, homework, furniture.','many + danh từ đếm được số nhiều; much + danh từ không đếm được (thường trong câu phủ định, câu hỏi).','a lot of: dùng được với cả hai loại.','some: câu khẳng định, lời mời; any: câu phủ định, câu hỏi.'],
+  forms:['How many + N số nhiều …?     How much + N không đếm được …?','There is some / isn’t any + N không đếm được','There are some / aren’t any + N số nhiều'],
+  signs:'How many / How much, a lot of, a few (+ đếm được), a little (+ không đếm được)',
+  ex:[['How many students are there in your class?','Lớp bạn có bao nhiêu học sinh?'],['I don’t have much free time.','Tôi không có nhiều thời gian rảnh.'],['Would you like some tea?','Bạn có muốn uống chút trà không?']],
+  mistakes:[['Can you give me some advices?','Can you give me some advice?'],['How much students are there?','How many students are there?']],
+  q:[
+   ['How ___ students are there in your class?',['much','many','any','a lot'],1,'students đếm được số nhiều → many.'],
+   ['I don’t have ___ money.',['many','much','some','a'],1,'money không đếm được, câu phủ định → much.'],
+   ['Would you like ___ tea?',['any','some','many','a'],1,'Lời mời → some.'],
+   ['There isn’t ___ milk in the fridge.',['some','any','many','a'],1,'Câu phủ định → any.'],
+   ['Chọn câu đúng:',['Can you give me some advices?','Can you give me some advice?','Can you give me an advice?','Can you give me many advice?'],1,'advice không đếm được → không thêm -s, không dùng “an”.'],
+   ['She has ___ friends in Da Nang.',['a lot of','much','any','a'],0,'Câu khẳng định với danh từ số nhiều → a lot of.'],
+   ['How ___ homework do you get every day?',['many','much','any','some'],1,'homework không đếm được → How much.'],
+   ['Are there ___ good restaurants near here?',['some','any','much','a'],1,'Câu hỏi với danh từ số nhiều → any.']]}
+];
+const qItem=(L,x)=>{const blank=x[0].includes('___');const prompt=h('p',{class:'qtext',style:'font-weight:500'},x[0]);
+  return {prompt,options:x[1],answer:x[2],wide:!blank,explain:`<strong>Đáp án: ${x[1][x[2]]}</strong> — ${x[3]}`,review:`<span class="note">${L.title}:</span> ${x[0]}<br>`,after:blank?x[0].replace('___',x[1][x[2]]).replace(/^“|”$/g,''):x[1][x[2]]};};
+
+function renderLesson(L){
+  return ()=>[
+    head(L.title,L.en),
+    h('div',{class:'sheet'},h('h3',{},'Cách dùng'),h('ul',{style:'margin:0;padding-left:20px;display:grid;gap:4px'},...L.use.map(u=>h('li',{},u)))),
+    h('div',{class:'sheet'},h('h3',{},'Công thức'),h('div',{class:'mono-list'},...L.forms.map(f=>h('div',{class:'form'},f.replace(/ {3,}/g,'\n')))),
+      h('div',{class:'rule'},h('span',{class:'lbl ok'},'Dấu hiệu nhận biết'),h('span',{},L.signs))),
+    L.irregular?h('div',{class:'sheet'},h('h3',{},'Động từ bất quy tắc hay gặp'),h('div',{class:'wordlist'},...L.irregular.map(([a,b])=>h('button',{type:'button',class:'wbtn',onclick:()=>TTS.say(a+'. '+b,.8)},h('span',{},a+' → '+b))))):null,
+    h('div',{class:'sheet'},h('div',{class:'bar'},h('h3',{},'Ví dụ'),speed()),noVoice(),
+      h('div',{class:'exlist'},...L.ex.map(([en,vi])=>h('div',{class:'exrow'},sayBtn(en),h('div',{class:'t'},h('strong',{},en),h('em',{},vi)))))),
+    h('div',{class:'sheet'},h('h3',{},'Lỗi hay gặp'),h('div',{class:'mistake'},...L.mistakes.flatMap(([bad,good])=>[h('span',{class:'x'},'✗'),h('span',{class:'strike'},bad),h('span',{class:'v'},'✓'),h('strong',{},good)]))),
+    h('div',{class:'sheet'},h('h3',{},'Luyện tập · '+L.q.length+' câu'),quiz({key:'gram-'+L.id,n:L.q.length,intro:'Chọn đáp án đúng. Thứ tự câu được trộn mỗi lượt.',make:n=>shuffle(L.q).slice(0,n).map(x=>qItem(L,x))}))
+  ];
+}
+function renderMix(){
+  const all=LESSONS.flatMap(L=>L.q.map(x=>[L,x]));
+  return [head('Bài tổng hợp','15 câu lấy ngẫu nhiên từ cả 6 bài ngữ pháp. Làm bài này sau khi đã học hết các bài để ôn tập.'),
+    h('div',{class:'sheet'},quiz({key:'gram-mix',n:15,intro:'Mỗi lượt 15 câu trộn từ '+all.length+' câu.',make:n=>pickN(all,n).map(([L,x])=>qItem(L,x))}))];
+}
+chrome({active:'ngu-phap',lead:'Ngữ pháp nền tảng: 6 bài trọng tâm, mỗi bài có công thức, ví dụ có âm thanh, lỗi hay gặp và bài trắc nghiệm.'});
+(window.__GATE||Promise.resolve()).then(()=>mountSections([
+  {group:'Bài học',items:LESSONS.map((L,i)=>({id:L.id,label:(i+1)+' · '+L.title,sym:L.sym,render:renderLesson(L)}))},
+  {group:'Ôn tập',items:[{id:'tong-hop',label:'Bài tổng hợp',sym:'Σ',render:renderMix}]}
+],'grammar',LESSONS[0].id));
+</script>
+</body>
+</html>

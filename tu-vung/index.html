@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Từ vựng · IELTS Basic</title>
+<meta name="description" content="Từ vựng IELTS Basic theo chủ đề: học từ, flashcard, trắc nghiệm, điền từ và nghe – viết. Ms Trâm English Hub.">
+<link rel="icon" href="../assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700&family=Be+Vietnam+Pro:wght@400;500;600;700&family=Gentium+Book+Plus:wght@400;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/gate.css">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}</style>
+</head>
+<body>
+<script src="../assets/gate.js"></script>
+<div class="shell">
+  <nav class="side" id="nav" aria-label="Hoạt động"></nav>
+  <main id="main"></main>
+</div>
+<script src="../assets/core.js"></script>
+<script>
+/* ===== DỮ LIỆU TỪ VỰNG — thêm chủ đề mới bằng cách thêm một khối {id, title, vi, words} =====
+   Mỗi từ: [từ, phiên âm IPA, từ loại, nghĩa tiếng Việt, câu ví dụ] */
+const VOCAB=[
+ {id:'family',title:'Family & Friends',vi:'Gia đình và bạn bè',words:[
+  ['relative','ˈrelətɪv','noun','họ hàng','A relative of mine lives in Quy Nhon.'],
+  ['parents','ˈpeərənts','noun','bố mẹ','My parents work very hard.'],
+  ['sibling','ˈsɪblɪŋ','noun','anh chị em ruột','I have one sibling, an older sister.'],
+  ['cousin','ˈkʌzn','noun','anh chị em họ','My cousin is the same age as me.'],
+  ['only child','ˌəʊnli ˈtʃaɪld','noun','con một','I am an only child.'],
+  ['get on with','ɡet ˈɒn wɪð','phrasal verb','hoà thuận với','I get on with my brother very well.'],
+  ['close','kləʊs','adjective','thân thiết','My best friend and I are very close.'],
+  ['grow up','ɡrəʊ ˈʌp','phrasal verb','lớn lên','I want to grow up and become a doctor.'],
+  ['look after','lʊk ˈɑːftə','phrasal verb','chăm sóc','My grandmother helps me look after my little sister.'],
+  ['friendship','ˈfrendʃɪp','noun','tình bạn','Our friendship is very important to me.'],
+  ['classmate','ˈklɑːsmeɪt','noun','bạn cùng lớp','Lan is my classmate.'],
+  ['spend time','spend ˈtaɪm','verb phrase','dành thời gian','I like to spend time with my family at weekends.']]},
+ {id:'hometown',title:'Hometown',vi:'Quê hương',words:[
+  ['hometown','ˈhəʊmtaʊn','noun','quê nhà','My hometown is by the sea.'],
+  ['coastal','ˈkəʊstl','adjective','ven biển','Quy Nhon is a coastal city.'],
+  ['peaceful','ˈpiːsfl','adjective','yên bình','Life in my village is peaceful.'],
+  ['crowded','ˈkraʊdɪd','adjective','đông đúc','The market is crowded in the morning.'],
+  ['traffic','ˈtræfɪk','noun','giao thông','The traffic is heavy at rush hour.'],
+  ['local','ˈləʊkl','adjective','(thuộc) địa phương','I love the local food.'],
+  ['resident','ˈrezɪdənt','noun','cư dân','Every resident here knows each other.'],
+  ['tourist attraction','ˈtʊərɪst əˌtrækʃn','noun','điểm du lịch','Ky Co beach is a popular tourist attraction.'],
+  ['modern','ˈmɒdn','adjective','hiện đại','The city centre is becoming more modern.'],
+  ['countryside','ˈkʌntrisaɪd','noun','vùng nông thôn','My grandparents live in the countryside.'],
+  ['public transport','ˌpʌblɪk ˈtrænspɔːt','noun','giao thông công cộng','Public transport is cheap here.'],
+  ['change','tʃeɪndʒ','verb','thay đổi','My hometown will change a lot in the future.']]},
+ {id:'routine',title:'Daily routine',vi:'Sinh hoạt hằng ngày',words:[
+  ['wake up','weɪk ˈʌp','phrasal verb','thức dậy','I wake up at six o’clock.'],
+  ['get dressed','ɡet ˈdrest','verb phrase','mặc quần áo','I get dressed and have breakfast.'],
+  ['commute','kəˈmjuːt','verb','đi lại (đi học, đi làm)','I commute to school by bike.'],
+  ['timetable','ˈtaɪmteɪbl','noun','thời khoá biểu','My timetable is very busy this term.'],
+  ['take a nap','teɪk ə ˈnæp','verb phrase','ngủ trưa','I usually take a nap after lunch.'],
+  ['housework','ˈhaʊswɜːk','noun','việc nhà','I help my mother with the housework.'],
+  ['have a shower','hæv ə ˈʃaʊə','verb phrase','tắm (vòi sen)','I have a shower before bed.'],
+  ['busy','ˈbɪzi','adjective','bận rộn','Mondays are always busy.'],
+  ['free time','ˌfriː ˈtaɪm','noun','thời gian rảnh','I do not have much free time.'],
+  ['habit','ˈhæbɪt','noun','thói quen','Reading before bed is a good habit.'],
+  ['stay up late','steɪ ʌp ˈleɪt','verb phrase','thức khuya','I sometimes stay up late to study.'],
+  ['routine','ruːˈtiːn','noun','nếp sinh hoạt hằng ngày','My daily routine is quite simple.']]},
+ {id:'hobbies',title:'Free time & Hobbies',vi:'Thời gian rảnh và sở thích',words:[
+  ['hobby','ˈhɒbi','noun','sở thích','My hobby is playing the guitar.'],
+  ['relax','rɪˈlæks','verb','thư giãn','I listen to music to relax.'],
+  ['keen on','ˈkiːn ɒn','adjective phrase','say mê, rất thích','I am keen on photography.'],
+  ['outdoor','ˈaʊtdɔː','adjective','ngoài trời','I prefer outdoor activities.'],
+  ['indoor','ˈɪndɔː','adjective','trong nhà','Chess is an indoor game.'],
+  ['collect','kəˈlekt','verb','sưu tầm','My brother likes to collect stamps.'],
+  ['jogging','ˈdʒɒɡɪŋ','noun','chạy bộ','I go jogging every morning.'],
+  ['social media','ˌsəʊʃl ˈmiːdiə','noun','mạng xã hội','Teenagers spend a lot of time on social media.'],
+  ['take up','teɪk ˈʌp','phrasal verb','bắt đầu (một sở thích)','I want to take up swimming this summer.'],
+  ['enjoyable','ɪnˈdʒɔɪəbl','adjective','thú vị, vui','Cooking is very enjoyable.'],
+  ['spare time','ˌspeə ˈtaɪm','noun','thời gian rảnh','What do you do in your spare time?'],
+  ['club','klʌb','noun','câu lạc bộ','I joined the English club at school.']]},
+ {id:'food',title:'Food & Drink',vi:'Đồ ăn và thức uống',words:[
+  ['delicious','dɪˈlɪʃəs','adjective','ngon','This soup is delicious.'],
+  ['healthy','ˈhelθi','adjective','lành mạnh, tốt cho sức khoẻ','I try to eat healthy food.'],
+  ['junk food','ˈdʒʌŋk fuːd','noun','đồ ăn nhanh, kém lành mạnh','Junk food is bad for your health.'],
+  ['seafood','ˈsiːfuːd','noun','hải sản','Quy Nhon is famous for seafood.'],
+  ['vegetarian','ˌvedʒəˈteəriən','noun','người ăn chay','My aunt is a vegetarian.'],
+  ['recipe','ˈresəpi','noun','công thức nấu ăn','Can you give me the recipe?'],
+  ['spicy','ˈspaɪsi','adjective','cay','I do not like spicy food.'],
+  ['home-cooked','ˌhəʊm ˈkʊkt','adjective','nấu tại nhà','I prefer home-cooked meals.'],
+  ['meal','miːl','noun','bữa ăn','We have three meals a day.'],
+  ['diet','ˈdaɪət','noun','chế độ ăn uống','A balanced diet is important.'],
+  ['street food','ˈstriːt fuːd','noun','đồ ăn đường phố','Vietnamese street food is cheap and tasty.'],
+  ['dish','dɪʃ','noun','món ăn','Banh xeo is my favourite dish.']]},
+ {id:'study',title:'Study & Work',vi:'Học tập và công việc',words:[
+  ['subject','ˈsʌbdʒɪkt','noun','môn học','My favourite subject is English.'],
+  ['homework','ˈhəʊmwɜːk','noun','bài tập về nhà','I do my homework every evening.'],
+  ['exam','ɪɡˈzæm','noun','kỳ thi','I have an exam next week.'],
+  ['revise','rɪˈvaɪz','verb','ôn tập','I need to revise for the test.'],
+  ['knowledge','ˈnɒlɪdʒ','noun','kiến thức','Reading books improves your knowledge.'],
+  ['skill','skɪl','noun','kỹ năng','Speaking is an important skill.'],
+  ['career','kəˈrɪə','noun','sự nghiệp','I want a career in tourism.'],
+  ['job','dʒɒb','noun','công việc','My father has a job in a bank.'],
+  ['colleague','ˈkɒliːɡ','noun','đồng nghiệp','My mother has a friendly colleague.'],
+  ['salary','ˈsæləri','noun','tiền lương','Doctors usually have a high salary.'],
+  ['part-time','ˌpɑːt ˈtaɪm','adjective','bán thời gian','I have a part-time job at a café.'],
+  ['graduate','ˈɡrædʒueɪt','verb','tốt nghiệp','I will graduate next year.']]}
+];
+const ALLW=VOCAB.flatMap(t=>t.words.map(w=>({w:w[0],ipa:w[1],pos:w[2],vi:w[3],ex:w[4],topic:t.id})));
+let TOPIC=store.get('vocab-topic','all');
+const TOPIC_CHIPS=[{id:'all',label:'Tất cả chủ đề'},...VOCAB.map(t=>({id:t.id,label:t.title}))];
+const pool=()=>TOPIC==='all'?ALLW:ALLW.filter(x=>x.topic===TOPIC);
+const topicBar=onPick=>h('div',{class:'bar'},chipRow(TOPIC_CHIPS,TOPIC,t=>{TOPIC=t;store.set('vocab-topic',t);onPick();}),speed());
+const hl=(ex,w)=>{const i=ex.toLowerCase().indexOf(w.toLowerCase());return i<0?[ex]:[ex.slice(0,i),h('b',{},ex.slice(i,i+w.length)),ex.slice(i+w.length)];};
+const gapOf=x=>{const i=x.ex.toLowerCase().indexOf(x.w.toLowerCase());return i<0?null:x.ex.slice(0,i)+'_____'+x.ex.slice(i+x.w.length);};
+
+/* ---- 1 · học từ ---- */
+function renderLearn(){
+  const box=h('div',{class:'vgrid'});
+  const draw=()=>{box.innerHTML='';pool().forEach(x=>box.append(h('div',{class:'vcard'},
+    h('div',{class:'hw'},h('strong',{},x.w),h('span',{class:'ipa'},'/'+x.ipa+'/')),
+    h('span',{class:'pos'},x.pos),h('span',{class:'vi'},x.vi),h('p',{class:'ex',style:'margin:0'},...hl(x.ex,x.w)),
+    h('div',{class:'chips'},sayBtn(x.w,'▶ Từ',.8),sayBtn(x.ex,'▶ Câu ví dụ')))));};
+  draw();
+  return [head('Học từ theo chủ đề','Nghe từng từ, đọc to theo 3 lần, rồi đọc câu ví dụ. Mỗi chủ đề có 12 từ hay dùng trong IELTS Speaking Part 1.'),
+    h('div',{class:'sheet'},topicBar(()=>draw()),noVoice(),box)];
+}
+/* ---- 2 · flashcard ---- */
+function renderFlash(){
+  const wrap=h('div',{class:'dict'});
+  let deck=[],k=0,flipped=false,known=0;
+  const draw=()=>{
+    wrap.innerHTML='';
+    if(!deck.length){deck=shuffle(pool());k=0;known=0;}
+    if(k>=deck.length){wrap.append(h('div',{class:'summary'},h('div',{class:'bigscore'},`${known}/${deck.length}`),h('p',{class:'note'},'từ em đã thuộc trong lượt này.'),
+      h('div',{class:'chips'},h('button',{type:'button',class:'btn',onclick:()=>{deck=[];draw();}},'Học lượt mới'))));return;}
+    const x=deck[k];
+    const card=h('div',{class:'flash',role:'button',tabindex:'0','aria-label':'Lật thẻ'});
+    const face=()=>{card.innerHTML='';if(!flipped) card.append(h('div',{},h('div',{class:'fw'},x.w),h('div',{class:'fi'},'/'+x.ipa+'/'),h('div',{class:'tap'},'Chạm để lật thẻ')));
+      else card.append(h('div',{style:'display:grid;gap:8px;justify-items:center'},h('div',{class:'fm'},x.vi),h('span',{class:'pos'},x.pos),h('div',{class:'fe'},...hl(x.ex,x.w))));};
+    const flip=()=>{flipped=!flipped;face();if(flipped)TTS.say(x.ex);};
+    card.addEventListener('click',flip);card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flip();}});
+    face();
+    wrap.append(h('div',{class:'meter'},h('span',{},`Thẻ ${k+1}/${deck.length}`),h('span',{class:'track'},h('i',{style:`width:${k/deck.length*100}%`})),h('span',{},`Đã thuộc ${known}`)),
+      card,h('div',{class:'chips'},sayBtn(x.w,'▶ Nghe từ',.8),
+        h('button',{type:'button',class:'btn line',onclick:()=>{k++;flipped=false;draw();}},'Chưa thuộc'),
+        h('button',{type:'button',class:'btn',onclick:()=>{known++;k++;flipped=false;draw();}},'Đã thuộc ✓')));
+    TTS.say(x.w,.85);
+  };
+  draw();
+  return [head('Flashcard','Nhìn từ, tự đoán nghĩa rồi chạm vào thẻ để lật. Bấm “Đã thuộc” nếu em nhớ đúng.'),
+    h('div',{class:'sheet'},topicBar(()=>{deck=[];draw();}),noVoice(),wrap)];
+}
+/* ---- 3 · trắc nghiệm nghĩa ---- */
+function renderMeaning(){
+  const holder=h('div',{});
+  const build=()=>{holder.innerHTML='';holder.append(quiz({key:'vocab-mean-'+TOPIC,intro:'Hai dạng câu hỏi trộn lẫn: nhìn từ chọn nghĩa, hoặc nhìn nghĩa chọn từ tiếng Anh.',
+    make:n=>pickN(pool(),n).map(x=>{
+      const others=pickN(ALLW.filter(y=>y.w!==x.w&&y.vi!==x.vi&&(TOPIC==='all'||y.topic===x.topic)),3);
+      const opts=shuffle([x,...others]);
+      if(Math.random()<.5) return {prompt:h('p',{class:'qtext'},'Nghĩa của ',h('strong',{class:'qword'},x.w),' ',h('span',{class:'ipa qipa',style:'font-size:20px'},'/'+x.ipa+'/'),' là gì?'),
+        options:opts.map(o=>o.vi),answer:opts.indexOf(x),explain:`<strong>${x.w}</strong> /${x.ipa}/ (${x.pos}): ${x.vi}.<br><span class="note">${x.ex}</span>`,after:x.w};
+      return {prompt:h('p',{class:'qtext'},'Từ nào có nghĩa là “',h('strong',{},x.vi),'”?'),
+        options:opts.map(o=>o.w),answer:opts.indexOf(x),explain:`“${x.vi}” là <strong>${x.w}</strong> /${x.ipa}/.<br><span class="note">${x.ex}</span>`,after:x.w};
+    })}));};
+  build();
+  return [head('Trắc nghiệm nghĩa của từ','Mỗi lượt 10 câu, câu hỏi được trộn ngẫu nhiên.'),h('div',{class:'sheet'},topicBar(build),noVoice(),holder)];
+}
+/* ---- 4 · điền từ vào câu ---- */
+function renderGap(){
+  const holder=h('div',{});
+  const build=()=>{holder.innerHTML='';holder.append(quiz({key:'vocab-gap-'+TOPIC,intro:'Chọn từ phù hợp để điền vào chỗ trống trong câu.',
+    make:n=>pickN(pool().filter(gapOf),n).map(x=>{
+      const others=pickN(ALLW.filter(y=>y.w!==x.w&&y.pos===x.pos),3);
+      const fill=others.length<3?others.concat(pickN(ALLW.filter(y=>y.w!==x.w&&!others.includes(y)),3-others.length)):others;
+      const opts=shuffle([x,...fill]);
+      return {prompt:h('p',{class:'qtext',style:'font-weight:500'},gapOf(x)),options:opts.map(o=>o.w),answer:opts.indexOf(x),wide:false,
+        explain:`<strong>${x.w}</strong> (${x.vi}) — ${x.ex}`,after:x.ex};
+    })}));};
+  build();
+  return [head('Điền từ vào câu','Đọc cả câu, đoán nghĩa của chỗ trống rồi chọn từ phù hợp. Sau khi chọn, máy đọc lại cả câu.'),h('div',{class:'sheet'},topicBar(build),noVoice(),holder)];
+}
+/* ---- 5 · nghe – viết chính tả ---- */
+function renderSpell(){
+  const area=h('div',{class:'dict'});
+  let qs=[],i=0,ok=0,wr=[];
+  const start=()=>{qs=pickN(pool(),10);i=0;ok=0;wr=[];show();};
+  function show(){
+    area.innerHTML='';
+    if(i>=qs.length){area.append(h('div',{class:'summary'},h('div',{class:'bar'},h('div',{},h('div',{class:'bigscore'},`${ok}/${qs.length}`),h('div',{class:'note'},'từ viết đúng chính tả')),h('div',{class:'chips'},h('button',{type:'button',class:'btn',onclick:start},'Làm lượt mới'))),
+      wr.length?h('h3',{},'Từ cần viết lại'):null,h('div',{class:'review'},...wr.map(r=>h('div',{class:'r'},h('span',{class:'x'},'✗'),h('div',{},h('strong',{},r.x.w),' ',h('span',{class:'ipa',style:'color:var(--teal)'},'/'+r.x.ipa+'/'),' — '+r.x.vi,h('div',{class:'note'},'Em viết: '+r.t)))))));return;}
+    const x=qs[i]; let done=false;
+    const inp=h('input',{type:'text',id:'spell-answer',class:'answer',autocomplete:'off',autocapitalize:'off',spellcheck:'false',placeholder:'Gõ từ em nghe được…','aria-label':'Từ em nghe được'});
+    const res=h('div',{role:'status'});
+    const nx=h('button',{type:'button',class:'btn',hidden:''},i+1<qs.length?'Câu tiếp →':'Xem kết quả'); nx.onclick=()=>{i++;show();};
+    const chk=h('button',{type:'button',class:'btn'},'Kiểm tra');
+    const check=()=>{ if(done){nx.click();return;} if(!inp.value.trim()){res.className='res no';res.textContent='Em chưa gõ gì. Bấm ▶ để nghe lại.';return;}
+      done=true; inp.readOnly=true; chk.hidden=true; nx.hidden=false;
+      const good=letters(inp.value)===letters(x.w); if(good) ok++; else wr.push({x,t:inp.value});
+      res.className='res '+(good?'ok':'no'); res.innerHTML='';
+      res.append(h('strong',{},good?'Chính xác!':'Chưa đúng.'),h('div',{},h('span',{class:'lbl ok'},'Đáp án  '),h('strong',{},x.w),' ',h('span',{class:'ipa',style:'color:var(--teal)'},'/'+x.ipa+'/'),' — '+x.vi),h('div',{class:'note'},x.ex));
+      nx.focus(); };
+    chk.onclick=check; inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();check();}};
+    const big=h('button',{type:'button',class:'play','aria-label':'Nghe'},'▶'); big.onclick=()=>{TTS.say(x.w,.8);inp.focus();};
+    area.append(h('div',{class:'meter'},h('span',{},`Từ ${i+1}/${qs.length}`),h('span',{class:'track'},h('i',{style:`width:${i/qs.length*100}%`})),h('span',{},`Đúng ${ok}`)),
+      h('div',{class:'player'},big,h('div',{class:'chips'},h('button',{type:'button',class:'btn sm line',onclick:()=>{TTS.say(x.w,.55);inp.focus();}},'▶ Nghe chậm'),h('button',{type:'button',class:'btn sm line',onclick:()=>{TTS.say(x.ex);inp.focus();}},'▶ Nghe trong câu'))),
+      h('p',{class:'note'},'Gợi ý nghĩa: ',h('strong',{},x.vi),` · ${x.w.split(' ').length>1?x.w.split(' ').length+' từ':letters(x.w).length+' chữ cái'}`),
+      inp,h('div',{class:'chips'},chk,nx),res);
+    setTimeout(()=>{TTS.say(x.w,.8);inp.focus();},200);
+  }
+  area.append(h('p',{class:'note'},'Máy đọc từ, em gõ lại cho đúng chính tả. Có gợi ý nghĩa tiếng Việt và số chữ cái.'),h('div',{class:'chips'},h('button',{type:'button',class:'btn',onclick:start},'Bắt đầu (10 từ)')));
+  return [head('Nghe – viết từ vựng','Luyện nhớ mặt chữ: nghe từ và gõ lại chính xác. Không cần viết hoa, dấu gạch nối hay khoảng trắng.'),
+    h('div',{class:'sheet'},topicBar(()=>{area.innerHTML='';area.append(h('p',{class:'note'},'Đã đổi chủ đề.'),h('div',{class:'chips'},h('button',{type:'button',class:'btn',onclick:start},'Bắt đầu (10 từ)')));}),noVoice(),area)];
+}
+chrome({active:'tu-vung',lead:'Từ vựng theo chủ đề IELTS Speaking Part 1: học từ, flashcard và 3 dạng bài luyện.'});
+(window.__GATE||Promise.resolve()).then(()=>mountSections([
+  {group:'Học',items:[{id:'hoc',label:'Học từ theo chủ đề',sym:'Aa',render:renderLearn},{id:'flash',label:'Flashcard',sym:'⇄',render:renderFlash}]},
+  {group:'Luyện tập',items:[{id:'nghia',label:'1 · Trắc nghiệm nghĩa',sym:'?',render:renderMeaning},{id:'dien',label:'2 · Điền từ vào câu',sym:'__',render:renderGap},{id:'viet',label:'3 · Nghe – viết',sym:'✎',render:renderSpell}]}
+],'vocab','hoc'));
+</script>
+</body>
+</html>
