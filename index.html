@@ -29,6 +29,7 @@
   --teal:#5cc6f2; --teal-soft:#123247; --mark:#6b5a12; --mark-ink:#fff1b8; --navy:#0a2c3e; --sky:#33bdf2;
   --good:#6fd29d; --good-soft:#163426; --bad:#f08a8d; --bad-soft:#3b1c1d; color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{background:var(--bg)}
 body{color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6}
 .ipa{font-family:var(--f-ipa)}
@@ -168,6 +169,17 @@ td.big{font-family:var(--f-ipa);font-size:20px;white-space:nowrap}
 .opt.right{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:700}
 .opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
 .uw u{text-decoration-thickness:2px;text-underline-offset:4px;text-decoration-color:var(--teal);font-weight:700}
+/* dictation v2 */
+.gapline{font-size:20px;line-height:2.3;margin:0}
+.gapin{font:inherit;font-size:18px;padding:1px 6px;border:0;border-bottom:2px solid var(--teal);background:var(--teal-soft);border-radius:4px 4px 0 0;text-align:center;color:var(--ink);max-width:100%}
+.gapin:focus{outline:2px solid var(--teal);outline-offset:1px}
+.gapin.ok{border-color:var(--good);background:var(--good-soft);color:var(--good);font-weight:700}
+.gapin.no{border-color:var(--bad);background:var(--bad-soft);color:var(--bad);text-decoration:line-through}
+.focusipa{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:15px}
+.focusipa .ipa{color:var(--teal)}
+.ctx{border-left:3px solid var(--teal);background:var(--teal-soft);border-radius:0 10px 10px 0;padding:10px 14px;display:grid;gap:4px}
+.ctx p{margin:0;font-size:17px}
+.ctx .cur{color:var(--muted);font-style:italic}
 @media (max-width:820px){
   .shell{grid-template-columns:minmax(0,1fr);gap:18px}
   nav.side{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding-block:8px;margin-inline:-4px}
@@ -553,80 +565,258 @@ function wordPool(topic){
   if(topic==='pairs') return PAIRS.flatMap(p=>[{t:p[1],ipa:p[2],why:`Cặp ${p[1]} /${p[2]}/ – ${p[3]} /${p[4]}/`},{t:p[3],ipa:p[4],why:`Cặp ${p[1]} /${p[2]}/ – ${p[3]} /${p[4]}/`}]);
   return [];
 }
+/* dictation bank — [word|ipa] marks the focus words */
+const DICT_EXTRA={
+ ipa:[
+  'My [brother|ˈbrʌðə] is [thirty|ˈθɜːti] years old.',
+  '[Thursday|ˈθɜːzdeɪ] is my favourite day of the week.',
+  'I [usually|ˈjuːʒuəli] have a [shower|ˈʃaʊə] in the evening.',
+  'She bought a new [jacket|ˈdʒækɪt] in [June|dʒuːn].',
+  'The [children|ˈtʃɪldrən] are [watching|ˈwɒtʃɪŋ] a cartoon.',
+  '[Their|ðeə] house is near the [river|ˈrɪvə].',
+  'We visit our grandparents in the [village|ˈvɪlɪdʒ].',
+  'I [think|θɪŋk] [this|ðɪs] [method|ˈmeθəd] is very useful.',
+  'The [singer|ˈsɪŋə] has a [strong|strɒŋ] voice.',
+  'Please [measure|ˈmeʒə] the [length|leŋθ] of the table.',
+  'He works at a [hospital|ˈhɒspɪtl] in the city.',
+  '[Yesterday|ˈjestədeɪ] was [warm|wɔːm] and sunny.'
+ ],
+ errs:[
+  'I [often|ˈɒfn] go to the [library|ˈlaɪbrəri] on Saturday.',
+  'My [colleague|ˈkɒliːɡ] is very [honest|ˈɒnɪst].',
+  'We stayed in a [comfortable|ˈkʌmftəbl] [hotel|həʊˈtel].',
+  '[Vegetables|ˈvedʒtəblz] are good for your health.',
+  'The meeting is on [Wednesday|ˈwenzdeɪ] morning.',
+  'I waited for an [hour|ˈaʊə] at the bus stop.',
+  'Can I have the [receipt|rɪˈsiːt], please?',
+  'She is [interested|ˈɪntrəstɪd] in [architecture|ˈɑːkɪtektʃə].',
+  'My father runs a small [business|ˈbɪznəs].',
+  'I [usually|ˈjuːʒuəli] eat [fruit|fruːt] after lunch.',
+  'These two [answers|ˈɑːnsəz] are [different|ˈdɪfrənt].',
+  'The [police|pəˈliːs] [asked|ɑːskt] me some questions.',
+  'I [walk|wɔːk] to [work|wɜːk] every morning.'
+ ],
+ s:[
+  'My mother [cooks|kʊks] and my father [washes|ˈwɒʃɪz] the [dishes|ˈdɪʃɪz].',
+  'He [plays|pleɪz] football with his [friends|frendz].',
+  'She [speaks|spiːks] three [languages|ˈlæŋɡwɪdʒɪz].',
+  'My sister [likes|laɪks] [roses|ˈrəʊzɪz] and [lilies|ˈlɪliz].',
+  'It [rains|reɪnz] a lot in the summer [months|mʌnθs].',
+  'He [fixes|ˈfɪksɪz] [bikes|baɪks] at the weekend.',
+  'My uncle [teaches|ˈtiːtʃɪz] [maths|mæθs] at a high school.',
+  'The [students|ˈstjuːdnts] write [essays|ˈeseɪz] every week.',
+  'She [watches|ˈwɒtʃɪz] [films|fɪlmz] in English.',
+  'My dad [drives|draɪvz] to work, but my mum [walks|wɔːks].',
+  'He [misses|ˈmɪsɪz] his [classes|ˈklɑːsɪz] when he is ill.',
+  'We need two [boxes|ˈbɒksɪz] and three [bags|bæɡz].'
+ ],
+ ed:[
+  'I [visited|ˈvɪzɪtɪd] my aunt last weekend.',
+  'We [watched|wɒtʃt] a film and [laughed|lɑːft] a lot.',
+  'She [cleaned|kliːnd] her room and [washed|wɒʃt] her clothes.',
+  'The bus [stopped|stɒpt] and the doors [opened|ˈəʊpənd].',
+  'He [wanted|ˈwɒntɪd] to become a doctor.',
+  'They [moved|muːvd] to Da Nang last year.',
+  'I [finished|ˈfɪnɪʃt] my homework and [played|pleɪd] games.',
+  'My parents [decided|dɪˈsaɪdɪd] to buy a new car.',
+  'She [looked|lʊkt] tired, so we [helped|helpt] her.',
+  'We [travelled|ˈtrævld] by train and [enjoyed|ɪnˈdʒɔɪd] the view.',
+  'The teacher [explained|ɪkˈspleɪnd] the lesson again.',
+  'He [asked|ɑːskt] a question and [waited|ˈweɪtɪd] for the answer.'
+ ],
+ pairs:[
+  'The [ship|ʃɪp] carried a lot of [sheep|ʃiːp].',
+  'I do not want to [leave|liːv] the city where I [live|lɪv].',
+  'The price of [rice|raɪs] will [rise|raɪz] next month.',
+  'I left my [bag|bæɡ] at the [back|bæk] of the class.',
+  '[Three|θriː] [trees|triːz] fell in the storm.',
+  'Put the [fan|fæn] in the [van|væn].',
+  'The [bed|bed] is not [bad|bæd].',
+  'He [thinks|θɪŋks] the [sink|sɪŋk] is broken.',
+  'She sat on a [chair|tʃeə] to [share|ʃeə] her story.',
+  'Turn [right|raɪt] at the traffic [light|laɪt].',
+  '[Pull|pʊl] the cover off the [pool|puːl].',
+  'I [heard|hɜːd] the test was [hard|hɑːd].',
+  'Do not [cut|kʌt] the rope on the [cart|kɑːt].'
+ ]
+};
+const PASSAGES=[
+ {title:'My hometown', lines:[
+  'I live in Quy Nhon, a [beautiful|ˈbjuːtɪfl] city by the sea.',
+  'It is [famous|ˈfeɪməs] for its [beaches|ˈbiːtʃɪz] and fresh [seafood|ˈsiːfuːd].',
+  'The [people|ˈpiːpl] here are [friendly|ˈfrendli] and [helpful|ˈhelpfl].',
+  'I [think|θɪŋk] it is a great [place|pleɪs] to live.']},
+ {title:'My family', lines:[
+  'There are four [people|ˈpiːpl] in my [family|ˈfæməli].',
+  'My [father|ˈfɑːðə] [works|wɜːks] as an [engineer|ˌendʒɪˈnɪə], and my mother [teaches|ˈtiːtʃɪz] English.',
+  'My younger [brother|ˈbrʌðə] [loves|lʌvz] playing computer [games|ɡeɪmz].',
+  'We [usually|ˈjuːʒuəli] have dinner [together|təˈɡeðə] at [seven|ˈsevn] o’clock.']},
+ {title:'My daily routine', lines:[
+  'I usually get up at [six|sɪks] o’clock.',
+  'After [breakfast|ˈbrekfəst], I [walk|wɔːk] to school with my [friends|frendz].',
+  'In the [afternoon|ˌɑːftəˈnuːn], I study English and do my [homework|ˈhəʊmwɜːk].',
+  'I [watched|wɒtʃt] a film last night and went to bed [late|leɪt].']},
+ {title:'My hobby', lines:[
+  'In my [free|friː] time, I [enjoy|ɪnˈdʒɔɪ] [reading|ˈriːdɪŋ] books.',
+  'Last [summer|ˈsʌmə], I [joined|dʒɔɪnd] a swimming [club|klʌb].',
+  'I [practised|ˈpræktɪst] [three|θriː] times a week and [learned|lɜːnd] a lot.',
+  'Now I can swim much [faster|ˈfɑːstə] than before.']},
+ {title:'Last weekend', lines:[
+  'Last [weekend|ˌwiːkˈend], my family [visited|ˈvɪzɪtɪd] the [countryside|ˈkʌntrisaɪd].',
+  'We [stayed|steɪd] with my [grandparents|ˈɡrænpeərənts] and [helped|helpt] them in the [garden|ˈɡɑːdn].',
+  'My grandmother [cooked|kʊkt] [delicious|dɪˈlɪʃəs] fish for us.',
+  'We [laughed|lɑːft] and [talked|tɔːkt] until [midnight|ˈmɪdnaɪt].']},
+ {title:'Learning English', lines:[
+  'I [started|ˈstɑːtɪd] [learning|ˈlɜːnɪŋ] English when I was [eight|eɪt].',
+  'At first, I [thought|θɔːt] the [pronunciation|prəˌnʌnsiˈeɪʃn] was very [difficult|ˈdɪfɪkəlt].',
+  'Now I [practise|ˈpræktɪs] [speaking|ˈspiːkɪŋ] every day with my teacher.',
+  'I want to get a good [score|skɔː] in the IELTS [test|test].']}
+];
+const parseD=s=>{const focus=[];const t=s.replace(/\[([^|\]]+)\|([^\]]+)\]/g,(m,w,p)=>{focus.push({w,p});return w;});return {t,focus};};
+const cleanW=w=>w.replace(/[.,!?;:]+$/,'');
+function dictPool(topic){
+  const fromS=SENTS[topic].items.map(x=>({t:x.text,focus:x.toks.filter(k=>k.f).map(k=>({w:cleanW(k.w),p:k.p.replace(/[.,]/g,'')})),why:x.f}));
+  const extra=(DICT_EXTRA[topic]||[]).map(s=>({...parseD(s),why:''}));
+  return [...fromS,...extra];
+}
+const hintOf=t=>t.split(' ').map(w=>{let first=true;return w.replace(/[A-Za-z]/g,c=>{if(first){first=false;return c;}return '_';});}).join('  ');
+const focusLine=q=>q.focus&&q.focus.length?h('div',{class:'focusipa'},...q.focus.map(f=>h('span',{},h('strong',{},f.w),' ',h('span',{class:'ipa'},'/'+f.p+'/')))):null;
+const DLEVELS=[{id:'sent',label:'Nghe câu'},{id:'gap',label:'Điền từ còn thiếu'},{id:'word',label:'Nghe từ'},{id:'para',label:'Nghe đoạn văn'}];
+
 function renderDict(){
   let topic=PRESET&&SENTS[PRESET]?PRESET:'s'; PRESET=null;
-  let level='sent', n=5;
-  let qs=[],i=0,results=[],plays=0,checked=false;
+  let level=store.get('dict-level','sent'); if(!DLEVELS.some(l=>l.id===level)) level='sent';
+  let count=5, psg='rand';
+  let qs=[],i=0,results=[],cur=null;
   const area=h('div',{class:'dict'});
+  const topicBar=h('div',{class:'bar'},chipRow(TOPICS,topic,t=>{topic=t;reset();}),speed());
+  const psgBar=h('div',{class:'bar'},chipRow([{id:'rand',label:'Ngẫu nhiên'},...PASSAGES.map((p,k)=>({id:String(k),label:p.title}))],psg,p=>{psg=p;reset();}),speed());
+  const INTRO={
+    sent:'Máy đọc một câu. Em nghe và gõ lại chính xác từng từ, đủ đuôi -s, -ed.',
+    gap:'Câu được hiện sẵn, một vài từ bị che. Em nghe rồi điền các từ còn thiếu vào ô trống.',
+    word:'Máy đọc 10 từ. Em gõ lại từng từ cho đúng chính tả.',
+    para:'Máy đọc một đoạn văn ngắn, từng câu một. Em gõ lại từng câu. Các câu đã làm hiện ở phía trên để em theo dõi mạch đoạn văn.'};
+  function intro(){
+    return h('div',{class:'dict'},h('p',{class:'note'},INTRO[level]+' Không cần quan tâm chữ hoa và dấu câu. Nhấn Enter để kiểm tra.'),
+      level==='sent'?h('div',{class:'bar'},h('span',{class:'note'},'Số câu mỗi lượt:'),chipRow([{id:5,label:'5 câu'},{id:10,label:'10 câu'}],count,c=>{count=c;})):null,
+      h('div',{class:'chips'},h('button',{type:'button',class:'btn',onclick:start},'Bắt đầu')));
+  }
+  function reset(){ area.innerHTML=''; area.append(intro()); topicBar.hidden=level==='para'; psgBar.hidden=level!=='para'; }
   function start(){
-    const pool=level==='sent'?SENTS[topic].items.map(x=>({t:x.text,ipa:x.ipa,why:x.f})):wordPool(topic);
-    n=level==='sent'?Math.min(5,pool.length):10;
-    qs=shuffle(pool).slice(0,n); i=0; results=[]; show();
+    results=[]; i=0; cur=null;
+    if(level==='para'){ cur=psg==='rand'?shuffle(PASSAGES)[0]:PASSAGES[+psg]; qs=cur.lines.map(l=>({...parseD(l),why:''})); }
+    else if(level==='word'){ qs=shuffle(wordPool(topic)).slice(0,10).map(x=>({t:x.t,focus:[{w:x.t,p:x.ipa}],why:x.why})); }
+    else qs=shuffle(dictPool(topic)).slice(0,level==='gap'?10:count);
+    show();
   }
   function show(){
-    area.innerHTML=''; plays=0; checked=false;
+    area.innerHTML='';
     if(i>=qs.length) return finish();
-    const q=qs[i];
-    const pct=(i/qs.length*100);
-    const track=h('span',{class:'track'},h('i',{style:`width:${pct}%`}));
+    const q=qs[i]; let plays=0,checked=false,hinted=false;
     const playsLbl=h('span',{class:'note'},'Chưa nghe');
-    const play=(r)=>{TTS.say(q.t,r);plays++;playsLbl.textContent='Đã nghe '+plays+' lần';};
-    const big=h('button',{type:'button',class:'play','aria-label':'Nghe'},'▶'); big.addEventListener('click',()=>{play();inp.focus();});
-    const nWords=words(q.t).length;
-    const inp=h('input',{type:'text',id:'dict-answer',class:'answer',autocomplete:'off',autocapitalize:'off',spellcheck:'false',placeholder:level==='sent'?'Gõ câu em nghe được…':'Gõ từ em nghe được…','aria-label':'Câu trả lời'});
+    const play=r=>{TTS.say(q.t,r);plays++;playsLbl.textContent='Đã nghe '+plays+' lần';};
     const res=h('div',{role:'status'});
     const check=h('button',{type:'button',class:'btn'},'Kiểm tra');
     const nextBtn=h('button',{type:'button',class:'btn',hidden:''},i+1<qs.length?'Câu tiếp →':'Xem kết quả');
     nextBtn.addEventListener('click',()=>{i++;show();});
-    function doCheck(){
-      if(checked){ if(!nextBtn.hidden) nextBtn.click(); return; }
-      if(!inp.value.trim()){ res.className='res no'; res.textContent='Em chưa gõ gì. Bấm ▶ để nghe rồi gõ lại những gì nghe được.'; return; }
-      checked=true; inp.readOnly=true; check.hidden=true; nextBtn.hidden=false;
-      const d=diff(q.t,inp.value); results.push({q,typed:inp.value,d});
-      const line=h('p',{class:'diff'});
-      d.out.forEach(x=>{
-        if(x.t==='ok') line.append(h('span',{class:'d-ok'},x.w),' ');
-        else if(x.t==='sub') line.append(h('span',{class:'d-wrong'},x.w),' ',h('span',{class:'d-fix'},x.c),' ');
-        else if(x.t==='miss') line.append(h('span',{class:'d-miss',title:'Em bỏ sót từ này'},x.c),' ');
-        else line.append(h('span',{class:'d-wrong',title:'Từ thừa'},x.w),' ');
+    const big=h('button',{type:'button',class:'play','aria-label':'Nghe'},'▶');
+    let focusFirst=()=>{}, grade, work;
+
+    if(level==='gap'){
+      const targets=(q.focus.length?q.focus:[{w:q.t.split(' ').map(cleanW).sort((a,b)=>b.length-a.length)[0],p:''}]).slice(0,3).map(f=>({w:cleanW(f.w),p:f.p}));
+      const used=new Set(), inputs=[];
+      const line=h('p',{class:'gapline'});
+      q.t.split(' ').forEach((tok,k)=>{
+        if(k) line.append(' ');
+        const ti=targets.findIndex((t,x)=>!used.has(x)&&norm(t.w)===norm(tok));
+        if(ti<0){ line.append(tok); return; }
+        used.add(ti);
+        const inp=h('input',{type:'text',class:'gapin',autocomplete:'off',autocapitalize:'off',spellcheck:'false','aria-label':'Từ còn thiếu số '+(inputs.length+1)});
+        inp.style.width=(Math.max(5,targets[ti].w.length)+2)+'ch'; inp._t=targets[ti]; inputs.push(inp);
+        const trail=tok.match(/[.,!?;:]+$/); line.append(inp,trail?trail[0]:'');
       });
-      res.className='res '+(d.perfect?'ok':'no'); res.innerHTML='';
-      res.append(h('strong',{},d.perfect?'Chính xác!':`Đúng ${d.ok}/${d.total} từ`),
-        d.perfect?null:line,
+      inputs.forEach((inp,k)=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); if(!checked&&k<inputs.length-1&&!inputs[k+1].value) inputs[k+1].focus(); else doCheck();}}));
+      work=h('div',{},h('p',{class:'note'},`Điền ${inputs.length} từ còn thiếu:`),line);
+      focusFirst=()=>inputs[0]&&inputs[0].focus();
+      grade=()=>{
+        if(inputs.every(x=>!x.value.trim())) return null;
+        let ok=0; inputs.forEach(x=>{const good=norm(x.value)===norm(x._t.w); if(good) ok++; x.classList.add(good?'ok':'no'); x.readOnly=true;});
+        const view=h('div',{class:'focusipa'},...inputs.map(x=>{const good=x.classList.contains('ok');return h('span',{},h('span',{class:good?'d-ok':'d-wrong'},x.value||'(trống)'),good?'':[' → ',h('span',{class:'d-fix'},x._t.w)],' ',x._t.p?h('span',{class:'ipa'},'/'+x._t.p+'/'):'');}));
+        return {ok,total:inputs.length,perfect:ok===inputs.length,view,typed:inputs.map(x=>x.value||'—').join(', ')};
+      };
+    } else {
+      const nWords=words(q.t).length;
+      const blanks=h('div',{class:'blanks','aria-label':nWords+' từ'},level==='word'?'1 từ':Array(nWords).fill('____').join(' ')+`   (${nWords} từ)`);
+      const inp=h('input',{type:'text',id:'dict-answer',class:'answer',autocomplete:'off',autocapitalize:'off',spellcheck:'false',placeholder:level==='word'?'Gõ từ em nghe được…':'Gõ câu em nghe được…','aria-label':'Câu trả lời'});
+      inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();doCheck();}});
+      const hintBtn=h('button',{type:'button',class:'btn sm line'},'Gợi ý chữ cái đầu');
+      hintBtn.addEventListener('click',()=>{hinted=true;blanks.textContent=hintOf(q.t);hintBtn.remove();inp.focus();});
+      work=h('div',{class:'dict'},h('div',{class:'bar'},blanks,level==='word'?null:hintBtn),inp);
+      focusFirst=()=>inp.focus();
+      grade=()=>{
+        if(!inp.value.trim()) return null;
+        inp.readOnly=true;
+        const d=diff(q.t,inp.value);
+        const view=h('p',{class:'diff'});
+        d.out.forEach(x=>{
+          if(x.t==='ok') view.append(h('span',{class:'d-ok'},x.w),' ');
+          else if(x.t==='sub') view.append(h('span',{class:'d-wrong'},x.w),' ',h('span',{class:'d-fix'},x.c),' ');
+          else if(x.t==='miss') view.append(h('span',{class:'d-miss',title:'Em bỏ sót từ này'},x.c),' ');
+          else view.append(h('span',{class:'d-wrong',title:'Từ thừa'},x.w),' ');
+        });
+        return {ok:d.ok,total:d.total,perfect:d.perfect,view,typed:inp.value};
+      };
+    }
+
+    function doCheck(){
+      if(checked){ nextBtn.click(); return; }
+      const g=grade();
+      if(!g){ res.className='res no'; res.textContent='Em chưa điền gì. Bấm ▶ để nghe rồi gõ những gì nghe được.'; focusFirst(); return; }
+      checked=true; check.hidden=true; nextBtn.hidden=false;
+      results.push({q,...g,hinted});
+      res.className='res '+(g.perfect?'ok':'no'); res.innerHTML='';
+      res.append(...[h('strong',{},g.perfect?'Chính xác!':`Đúng ${g.ok}/${g.total} ${level==='gap'?'ô':'từ'}`,hinted?' (có dùng gợi ý)':''),
+        g.perfect&&level!=='gap'?null:g.view,
         h('div',{},h('span',{class:'lbl ok'},'Đáp án  '),h('strong',{},q.t)),
-        h('div',{class:'ipa',style:'font-size:18px'},q.ipa.startsWith('/')?q.ipa:'/'+q.ipa+'/'),
-        h('div',{class:'note'},q.why),
-        h('div',{class:'chips'},h('button',{type:'button',class:'btn sm line',onclick:()=>TTS.say(q.t)},'▶ Nghe lại đáp án')));
+        focusLine(q),
+        q.why?h('div',{class:'note'},q.why):null,
+        h('div',{class:'chips'},h('button',{type:'button',class:'btn sm line',onclick:()=>TTS.say(q.t)},'▶ Nghe lại đáp án'))].filter(Boolean));
       nextBtn.focus();
-      store.set('dict-total',(store.get('dict-total',0))+1); if(d.perfect) store.set('dict-right',(store.get('dict-right',0))+1); pill();
+      store.set('dict-total',store.get('dict-total',0)+1); if(g.perfect) store.set('dict-right',store.get('dict-right',0)+1); pill();
     }
     check.addEventListener('click',doCheck);
-    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();doCheck();}});
-    area.append(h('div',{class:'meter'},h('span',{},`Câu ${i+1}/${qs.length}`),track,h('span',{},`Đúng ${results.filter(r=>r.d.perfect).length}`)),
-      h('div',{class:'player'},big,h('div',{style:'display:grid;gap:4px'},h('div',{class:'chips'},h('button',{type:'button',class:'btn sm line',onclick:()=>{play(.6);inp.focus();}},'▶ Nghe chậm')),playsLbl)),
-      h('div',{class:'blanks','aria-label':nWords+' từ'},level==='sent'?Array(nWords).fill('____').join(' ')+`   (${nWords} từ)`:'1 từ'),
-      inp,h('div',{class:'chips'},check,nextBtn),res);
-    setTimeout(()=>play(),200);
+    big.addEventListener('click',()=>{play();focusFirst();});
+
+    if(level==='para'){
+      area.append(h('div',{class:'ctx'},h('div',{class:'lbl ok'},'Đoạn văn · '+cur.title),
+        ...results.map(r=>h('p',{},r.q.t)),h('p',{class:'cur'},`Câu ${i+1} — đang nghe…`)));
+    }
+    area.append(h('div',{class:'meter'},h('span',{},`Câu ${i+1}/${qs.length}`),h('span',{class:'track'},h('i',{style:`width:${i/qs.length*100}%`})),h('span',{},`Đúng ${results.filter(r=>r.perfect).length}`)),
+      h('div',{class:'player'},big,h('div',{style:'display:grid;gap:4px'},h('div',{class:'chips'},h('button',{type:'button',class:'btn sm line',onclick:()=>{play(.6);focusFirst();}},'▶ Nghe chậm')),playsLbl)),
+      work,h('div',{class:'chips'},check,nextBtn),res);
+    setTimeout(()=>{play();focusFirst();},200);
   }
   function finish(){
-    const right=results.filter(r=>r.d.perfect).length;
-    const best=store.get('best',{}); const key=topic+'-'+level; best[key]=Math.max(best[key]||0,right); store.set('best',best);
+    const right=results.filter(r=>r.perfect).length;
+    const wOk=results.reduce((a,r)=>a+r.ok,0), wAll=results.reduce((a,r)=>a+r.total,0);
+    const best=store.get('best',{}); const key=(level==='para'?'para':topic)+'-'+level; best[key]=Math.max(best[key]||0,right); store.set('best',best);
+    const full=cur?cur.lines.map(l=>parseD(l).t).join(' '):'';
     area.append(h('div',{class:'summary'},
-      h('div',{class:'bar'},h('div',{},h('div',{class:'bigscore'},`${right}/${results.length}`),h('div',{class:'note'},'câu viết chính xác hoàn toàn')),
-        h('div',{class:'chips'},h('button',{type:'button',class:'btn',onclick:start},'Làm lượt mới'),h('button',{type:'button',class:'btn line',onclick:()=>{PRESET=topic;go('mau');window.scrollTo({top:0});}},'Ôn câu mẫu'))),
+      h('div',{class:'bar'},h('div',{},h('div',{class:'bigscore'},`${right}/${results.length}`),
+          h('div',{class:'note'},`${level==='gap'?'câu điền đúng hết':'câu viết chính xác hoàn toàn'} · đúng ${wAll?Math.round(wOk/wAll*100):0}% số ${level==='gap'?'ô':'từ'}`)),
+        h('div',{class:'chips'},h('button',{type:'button',class:'btn',onclick:start},'Làm lượt mới'),
+          level==='para'?h('button',{type:'button',class:'btn line',onclick:()=>TTS.say(full)},'▶ Nghe cả đoạn'):h('button',{type:'button',class:'btn line',onclick:()=>{PRESET=topic;go('mau');window.scrollTo({top:0});}},'Ôn câu mẫu'))),
+      cur?h('div',{class:'ctx'},h('div',{class:'lbl ok'},'Đoạn văn · '+cur.title),h('p',{},full)):null,
       h('h3',{},'Xem lại'),
-      h('div',{class:'review'},...results.map(r=>h('div',{class:'r'},h('span',{class:r.d.perfect?'v':'x'},r.d.perfect?'✓':'✗'),
-        h('div',{},h('strong',{},r.q.t),' ',h('span',{class:'ipa',style:'color:var(--teal)'},r.q.ipa.startsWith('/')?r.q.ipa:'/'+r.q.ipa+'/'),
-          r.d.perfect?null:h('div',{class:'note'},'Em viết: ',r.typed)))))));
+      h('div',{class:'review'},...results.map(r=>h('div',{class:'r'},h('span',{class:r.perfect?'v':'x'},r.perfect?'✓':'✗'),
+        h('div',{},h('strong',{},r.q.t),r.hinted?h('span',{class:'note'},' (có gợi ý)'):'',focusLine(r.q),
+          r.perfect?null:h('div',{class:'note'},'Em viết: ',r.typed)))))));
   }
-  const intro=h('div',{class:'dict'},h('p',{class:'note'},'Máy đọc một câu (hoặc một từ). Em nghe và gõ lại chính xác từng từ. Không cần quan tâm chữ hoa và dấu câu, nhưng phải đúng chính tả và đủ đuôi -s, -ed. Nhấn Enter để kiểm tra.'),
-    h('div',{class:'chips'},h('button',{type:'button',class:'btn',onclick:start},'Bắt đầu')));
-  area.append(intro);
-  return [head('Luyện 2 · Dictation — nghe và viết chính xác','Dictation luyện tai phân biệt âm: nếu em viết “ship” khi nghe “sheep”, hoặc quên đuôi “-ed”, nghĩa là tai chưa bắt được âm đó.'),
+  reset();
+  return [head('Luyện 2 · Dictation — nghe và viết chính xác','Bốn dạng bài từ dễ đến khó: điền từ còn thiếu, nghe từ, nghe câu và nghe cả đoạn văn. Viết sai “ship” thành “sheep” hay quên đuôi “-ed” nghĩa là tai chưa bắt được âm đó.'),
    h('div',{class:'sheet'},
-     h('div',{class:'bar'},chipRow(TOPICS,topic,t=>{topic=t;area.innerHTML='';area.append(intro);}),speed()),
-     h('div',{class:'bar'},h('span',{class:'note'},'Dạng bài:'),chipRow([{id:'sent',label:'Nghe câu'},{id:'word',label:'Nghe từ (10 từ)'}],level,l=>{level=l;area.innerHTML='';area.append(intro);})),
-     noVoice(),area)];
+     h('div',{class:'bar'},h('span',{class:'note'},'Dạng bài:'),chipRow(DLEVELS,level,l=>{level=l;store.set('dict-level',l);reset();})),
+     topicBar,psgBar,noVoice(),area)];
 }
 
 /* ---------- quiz engine (practice 3–6) ---------- */
